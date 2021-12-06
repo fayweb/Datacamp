@@ -596,3 +596,147 @@ plt_country_vs_lifeExp +
         arrow = arrow(length = unit(0.2, "cm"), type = "closed"),
         color = "grey40"
     )
+
+
+# View the structure of mtcars
+str(mtcars)
+
+# Using mtcars, draw a scatter plot of mpg vs. wt
+ggplot(mtcars, aes(x = wt, y = mpg)) +
+    geom_point()
+
+# Amend the plot to add a smooth layer
+ggplot(mtcars, aes(x = wt, y = mpg)) +
+    geom_point() +
+    geom_smooth()
+
+# Amend the plot. Swap geom_smooth() for stat_smooth().
+ggplot(mtcars, aes(x = wt, y = mpg)) +
+    geom_point() +
+    geom_smooth(method = "lm", se = FALSE)
+
+# Amend the plot. Swap geom_smooth() for stat_smooth().
+ggplot(mtcars, aes(x = wt, y = mpg)) +
+    geom_point() +
+    stat_smooth(method = "lm", se = FALSE)
+
+# Amend the plot to add another smooth layer with dummy grouping
+ggplot(mtcars, aes(x = wt, y = mpg, color = fcyl)) +
+    geom_point() +
+    stat_smooth(method = "lm", se = FALSE)
+
+# Amend the plot to add another smooth layer with dummy grouping
+ggplot(mtcars, aes(x = wt, y = mpg, color = fcyl)) +
+    geom_point() +
+    stat_smooth(method = "lm", se = FALSE) +
+    stat_smooth(method = "lm", se = FALSE, aes(group =1))
+
+ggplot(mtcars, aes(x = wt, y = mpg)) +
+    geom_point() +
+    # Add 3 smooth LOESS stats, varying span & color
+    stat_smooth(se = FALSE, color = "red", span = 0.9) +
+    stat_smooth(se = FALSE, color = "green", span = 0.6) +
+    stat_smooth(se = FALSE, color = "blue", span = 0.3)
+
+# Amend the plot to color by fcyl
+ggplot(mtcars, aes(x = wt, y = mpg)) +
+    geom_point() +
+    # Add a smooth LOESS stat, no ribbon
+    stat_smooth(se = FALSE) +
+    # Add a smooth lin. reg. stat, no ribbon
+    stat_smooth(method ="lm", se = FALSE)
+
+# Amend the plot
+ggplot(mtcars, aes(x = wt, y = mpg, color = fcyl)) +
+    geom_point() +
+    # Map color to dummy variable "All"
+    stat_smooth(aes(color = "All"), se = FALSE) +
+    stat_smooth(method = "lm", se = FALSE)
+
+# Using Vocab, plot vocabulary vs. education, colored by year group
+ggplot(Vocab, aes(education, vocabulary, color = year_group)) +
+    # Add jittered points with transparency 0.25
+    geom_jitter(alpha = 0.25) +
+    # Add a smooth lin. reg. line (with ribbon)
+    stat_smooth(method = "lm", se = TRUE)
+
+# Amend the plot
+ggplot(Vocab, aes(x = education, y = vocabulary, color = year_group)) +
+    geom_jitter(alpha = 0.25) +
+    # Map the fill color to year_group, set the line size to 2
+    stat_smooth(method = "lm", aes(fill = year_group, size = 2))
+
+ggplot(Vocab, aes(x = education, y = vocabulary)) +
+    geom_jitter(alpha = 0.25) +
+    # Add a quantile stat, at 0.05, 0.5, and 0.95
+    stat_quantile(quantiles = c(0.05, 0.5, 0.95))
+
+# Amend the plot to color by year_group
+ggplot(Vocab, aes(x = education, y = vocabulary, color = year_group)) +
+    geom_jitter(alpha = 0.25) +
+    stat_quantile(quantiles = c(0.05, 0.5, 0.95))
+
+# Run this, look at the plot, then update it
+ggplot(Vocab, aes(x = education, y = vocabulary)) +
+    # Replace this with a sum stat
+    geom_jitter(alpha = 0.25)
+
+# Run this, look at the plot, then update it
+ggplot(Vocab, aes(x = education, y = vocabulary)) +
+    # Replace this with a sum stat
+    stat_sum(alpha = 0.25)
+
+ggplot(Vocab, aes(x = education, y = vocabulary)) +
+    stat_sum() +
+    # Add a size scale, from 1 to 10
+    scale_size(range = c(1, 10))
+
+# Amend the stat to use proportion sizes
+ggplot(Vocab, aes(x = education, y = vocabulary)) +
+    stat_sum(aes(size = ..prop..))
+
+# Amend the plot to group by education
+ggplot(Vocab, aes(x = education, y = vocabulary, group = education)) +
+    stat_sum(aes(size = ..prop..))
+
+# Define position objects
+# 1. Jitter with width 0.2
+posn_j <- position_jitter(width = 0.2)
+
+# 2. Dodge with width 0.1
+posn_d <- position_dodge(width = 0.1)
+
+# 3. Jitter-dodge with jitter.width 0.2 and dodge.width 0.1
+posn_jd <- position_jitterdodge(jitter.width = 0.2, dodge.width = 0.1)
+
+# From previous step
+posn_j <- position_jitter(width = 0.2)
+posn_d <- position_dodge(width = 0.1)
+posn_jd <- position_jitterdodge(jitter.width = 0.2, dodge.width = 0.1)
+
+# Create the plot base: wt vs. fcyl, colored by fam
+p_wt_vs_fcyl_by_fam <- ggplot(mtcars, aes(x = fcyl, y = wt, color = fam)) 
+
+# Add a point layer
+p_wt_vs_fcyl_by_fam +
+    geom_point()
+
+# Add jittering only
+p_wt_vs_fcyl_by_fam +
+    geom_point(position = posn_j)
+
+# Add dodging only
+p_wt_vs_fcyl_by_fam +
+    geom_point(position = posn_d)
+
+# Add jittering and dodging
+p_wt_vs_fcyl_by_fam +
+    geom_point(position = posn_jd)
+
+p_wt_vs_fcyl_by_fam_jit +
+    # Change the geom to be an errorbar
+    stat_summary(fun.data = mean_sdl, fun.args = list(mult = 1), position = posn_d)
+
+p_wt_vs_fcyl_by_fam_jit +
+    # Change the geom to be an errorbar
+    stat_summary(fun.data = mean_sdl, fun.args = list(mult = 1), position = posn_d, geom = ("errorbar"))
